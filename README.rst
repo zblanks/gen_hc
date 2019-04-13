@@ -12,7 +12,7 @@ Generalized Hierarchical Classifiers
 Code to implement a generalized hierarchical classifier when the label grouping is not known beforehand
 
 * Free software: 3-clause BSD license
-* Documentation: (COMING SOON!) https://zblanks.github.io/gen_hc.
+* Documentation: https://zblanks.github.io/gen_hc.
 
 Features
 --------

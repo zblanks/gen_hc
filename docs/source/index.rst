@@ -11,4 +11,5 @@ Generalized Hierarchical Classifiers Documentation
 
    installation
    usage
+   label-grouping
    release-history
