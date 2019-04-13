@@ -62,14 +62,14 @@ def compute_kmc(V, k, random_state=None, n_jobs=1):
         Mean label point matrix
     k : int
         Desired number of meta-classes
-    random_state : int or np.random.RandomState
+    random_state : int or np.random.RandomState, optional
         Pseudo random number generator
-    n_jobs : int
+    n_jobs : int, optional
         Desired number of cores to run clustering algorithm; -1 runs all cores
 
     Returns
     -------
-    label_groups: np.ndarray
+    label_groups : np.ndarray
         Label grouping
 
     Examples
@@ -138,12 +138,11 @@ def compute_cd(V, metric='rbf', random_state=None, n_jobs=1):
     ----------
     V : np.ndarray
         Mean label point matrix
-    metric : str
-        Which measure to use to compute label similarity. Only support RBF
-        ('rbf'), L2 ('l2'), and L-infinity ('linf') measures
-    random_state : int or np.random.RandomState
+    metric : {'rbf', 'l2', 'linf'}, optional
+        Which measure to use to compute label similarity
+    random_state : int or np.random.RandomState, optional
         Pseudo random number generator
-    n_jobs : int
+    n_jobs : int, optional
         Desired number of cores to run clustering algorithm; -1 runs all cores
 
     Returns
@@ -191,23 +190,23 @@ def group_labels(X, y, group_algo='kmeans', random_state=None, k=None,
         Data matrix
     y : np.ndarray
         Label vector
-    group_algo : str
-        Which grouping algorithm to use -- 'kmeans' or 'cd'
-    random_state : int or np.random.RandomState
+    group_algo : {'kmeans', 'cd'}, optional
+        Which grouping algorithm to use
+    random_state : int or np.random.RandomState, optional
         Pseudo random number generator
-    k : int
+    k : int, optional
         Number of meta-classes if k-means method is called
-    metric : str
+    metric : {'rbf', 'l2', 'linf}, optional
         Similarity metric to use if community detection method is called
-    n_jobs : int
+    n_jobs : int, optional
         Desired number of cores to run clustering algorithm; -1 runs all cores
-    label_frac : float
+    label_frac : float, optional
         Fraction of the label space to use for meta-classes if the number
         is not specified
 
     Returns
     -------
-    label_groups: np.ndarray
+    label_groups : np.ndarray
         Label grouping
 
     Examples
