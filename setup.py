@@ -37,7 +37,8 @@ setup(
     name='gen_hc',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Code to implement a generalized hierarchical classifier when the label grouping is not known beforehand",
+    description="Code to implement a generalized hierarchical classifier when"
+                " the label grouping is not known beforehand",
     long_description=readme,
     author="Zachary Blanks",
     author_email='zachblanks17@gmail.com',

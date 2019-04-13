@@ -24,7 +24,7 @@ def test_check_valid_partition():
 
     # Check that a valid partition is good
     partition = np.array([0, 1, 1])
-    assert group_labels._check_valid_partition(partition, 3, 'rbf') == True
+    assert group_labels._check_valid_partition(partition, 3, 'rbf') is True
 
 
 def test_convert_format():
@@ -52,6 +52,7 @@ def test_compute_cd():
     V = np.array([[0, 0], [5, 5], [10, 10]])
     with pytest.raises(ValueError):
         group_labels.compute_cd(V, 'rbf')
+
 
 def test_group_labels():
     # Check that the example works
