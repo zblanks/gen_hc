@@ -6,6 +6,11 @@ cache:
     - $HOME/.cache/pip
     - $HOME/.ccache  # https://github.com/travis-ci/travis-ci/issues/5853
 
+env:
+  global:
+    # Doctr deploy key for zblanks/gen_hc
+    - secure: "BIzDwLWBG3pY1EeH0mJxlmyowVJZkdV8HBbxaOPz+Pd1YKlP3KPUN0ucbr6j2gXkefFjC4ZSRZa7zpL9HnforqcaC3xQ9DWj8xff3eaxhVtb1ZHbTxEGBVzhx0lYVj0/BKBKTdRxOsmXMWDy6p59fmbwDthlk7SOv5OClCmdp1Xx0PHYsAqlAYudvzHyRjiKuBhSJA0DJiKg3Y01PMdwokckp1Q6ZG1cGhgGeO+a4vhxg9w90gppMkaaCoxoMJqGDNFu2yetXOIIOJFpfFPQ5XrXc+WXgRFQrbqSG55dKzoPtIaJxMJH5hC/Qs8Kqin3jrMmRZp1XDqcx7NZBMA0Vj7xQEB9VudaonzsXNDFpdwmeGCH5qTUxOHXZTy6WFegvdG+H9WehgwQcw+JvPWKrPXnecRcJ6FIOWkyZs1XqVlz0Dovu8A+JTcYXMeakiYsy3R8E9qDrAczZjkPe5L7SDH5xj73ZPu8KooTCeZal+6XC69iXzy7WrEafTOSvXi7GHBMXwFUcc7jVhnvUT4IxVitNdIIjXx/cR2kiV5LQm/MPbC8nduI7dd9D+hyjrGxW0Fl70SpSPcNmHyaPYiwhrHBM1pzFpowEd0Mny5+XECZGShtQ4Ti8CyuFCfyUjgIsJFhjYZzhSnZ1SJb5uTB94oKI6VaeNsVl9Tzd/saHeI="
+
 install:
   # Install this package and the packages listed in requirements.txt.
   - pip install .
@@ -17,4 +22,7 @@ script:
   - coverage report -m  # Generate test coverage report.
   - codecov  # Upload the report to codecov.
   - flake8 --max-line-length=115  # Enforce code style (but relax line length limit a bit).
+  - set -e  # If any of the following steps fail, just stop at that point.
   - make -C docs html  # Build the documentation.
+  - pip install doctr
+  - doctr deploy --built-docs docs/build/html .  # Publish the documentation.
