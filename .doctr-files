@@ -1,5 +1,8 @@
+./_modules/gen_hc/group_labels.html
+./_modules/index.html
 ./_sources/index.rst.txt
 ./_sources/installation.rst.txt
+./_sources/label-grouping.rst.txt
 ./_sources/release-history.rst.txt
 ./_sources/usage.rst.txt
 ./_static/basic.css
@@ -61,6 +64,7 @@
 ./genindex.html
 ./index.html
 ./installation.html
+./label-grouping.html
 ./objects.inv
 ./release-history.html
 ./search.html

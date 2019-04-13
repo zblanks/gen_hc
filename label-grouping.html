@@ -1,0 +1,499 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Label Grouping &mdash; Generalized Hierarchical Classifiers 0.post9+g5f53b0b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release History" href="release-history.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Generalized Hierarchical Classifiers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post9+g5f53b0b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Label Grouping</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mean-point-matrix">Mean-Point Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#k-means-clustering-approach">K-Means Clustering Approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#community-detection-approach">Community Detection Approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-documentation">Function Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Generalized Hierarchical Classifiers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Label Grouping</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/label-grouping.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="label-grouping">
+<h1>Label Grouping<a class="headerlink" href="#label-grouping" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The first step to employ the hierarchical classifiers (HCs) presented in this
+code base is to group label “similar” labels together. Similarity can be
+measured in a variety of ways, but in our research we have primarily focused
+on <span class="math notranslate nohighlight">\(L_2\)</span> distance, and the radial basis function (RBF) kernel, and
+the <span class="math notranslate nohighlight">\(L_\infty\)</span> distance. The <span class="math notranslate nohighlight">\(L_2\)</span> norm is used for both grouping
+methods whereas the RBF and <span class="math notranslate nohighlight">\(L_\infty\)</span> norm is only applied for the
+community detection approach.</p>
+</div>
+<div class="section" id="mean-point-matrix">
+<h2>Mean-Point Matrix<a class="headerlink" href="#mean-point-matrix" title="Permalink to this headline">¶</a></h2>
+<p>There are two primary techniques we employ to group the labels – a k-means
+based approach and a community detection methodology. These algorithms were
+selected because they can find solutions quickly and demonstrated good
+empirical performance in a variety of experimental settings. For both methods
+we have a two step process where we first find the mean representation of the
+label, indicated as the <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> matrix and then apply the grouping
+algorithm. We work with a mean point matrix versus the entire data set,
+<span class="math notranslate nohighlight">\(\mathbf{X}\)</span>, primarily for computational reasons. The mean point matrix
+grows linearly with the number of labels whereas <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> grows both
+with the number of samples as well as the number of classes. To find
+<span class="math notranslate nohighlight">\(\mathbf{V}\)</span>, suppose we have data
+<span class="math notranslate nohighlight">\(\mathcal{D} = (\mathbf{X}, \mathbf{y})\)</span> which equals</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{X} =
+    \begin{bmatrix}
+        1    &amp; 1 \\
+        1.25 &amp; 1 \\
+        1    &amp; 1.25 \\
+        1.25 &amp; 1.25 \\
+        5    &amp; 5   \\
+        5.25 &amp; 5.25 \\
+    \end{bmatrix}\end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{y} = (0, 0, 1, 1, 2, 2)^T.\]</div>
+<p>We can then employ the function <a class="reference internal" href="#gen_hc.group_labels.build_v_matrix" title="gen_hc.group_labels.build_v_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_v_matrix()</span></code></a>
+like</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="kn">import</span> <span class="n">build_v_matrix</span>
+
+<span class="gp">In [3]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">   ...: </span>              <span class="p">[</span><span class="mf">5.25</span><span class="p">,</span> <span class="mf">5.25</span><span class="p">]])</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [4]: </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="gp">In [5]: </span><span class="n">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">array([[1.125, 1.   ],</span>
+<span class="go">       [1.125, 1.25 ],</span>
+<span class="go">       [5.125, 5.125]])</span>
+</pre></div>
+</div>
+<p>and the output will yield the <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> matrix. This matrix is the
+base input for both of the label grouping approaches.</p>
+</div>
+<div class="section" id="k-means-clustering-approach">
+<h2>K-Means Clustering Approach<a class="headerlink" href="#k-means-clustering-approach" title="Permalink to this headline">¶</a></h2>
+<p>The simplest of the two label grouping methods is to employ k-means clustering
+on <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> by specifying the desired number of meta-classes. For
+example,</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="kn">import</span> <span class="n">compute_kmc</span>
+
+<span class="gp">In [7]: </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+
+<span class="gp">In [8]: </span><span class="n">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[8]: </span><span class="go">array([1, 0, 0], dtype=int32)</span>
+</pre></div>
+</div>
+<p>goes through the specified <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> matrix containing three labels
+and finds a partition which groups them into two meta-classes. One can also
+access this method more generally through the
+<a class="reference internal" href="#gen_hc.group_labels.group_labels" title="gen_hc.group_labels.group_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">group_labels()</span></code></a>. For example,</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="kn">import</span> <span class="n">group_labels</span>
+
+<span class="gp">In [10]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.4</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.6</span><span class="p">,</span> <span class="mf">2.6</span><span class="p">],</span>
+<span class="gp">   ....: </span>              <span class="p">[</span><span class="mf">2.9</span><span class="p">,</span> <span class="mf">2.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">]])</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [11]: </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="gp">In [12]: </span><span class="n">group_labels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">group_algo</span><span class="o">=</span><span class="s1">&#39;kmeans&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gh">Out[12]: </span><span class="go">array([1, 0, 0], dtype=int32)</span>
+</pre></div>
+</div>
+<p>where <a class="reference internal" href="#gen_hc.group_labels.group_labels" title="gen_hc.group_labels.group_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">group_labels()</span></code></a> is calling the k-means
+clustering approach and finding a partition with two meta-classes.</p>
+</div>
+<div class="section" id="community-detection-approach">
+<h2>Community Detection Approach<a class="headerlink" href="#community-detection-approach" title="Permalink to this headline">¶</a></h2>
+<p>The other approach that is supported when grouping labels is a community
+detection approach. For this methodology, <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> is converted into
+a similarity matrix, <span class="math notranslate nohighlight">\(\mathbf{S}\)</span>, which can be viewed as a graph, and
+then the <a class="reference external" href="https://arxiv.org/abs/0803.0476">Louvain method</a> is applied to
+partition the nodes into communities.</p>
+<p>The key hyper-parameter for this approach is the similarity metric to employ.
+We support the RBF kernel, <span class="math notranslate nohighlight">\(L_2\)</span> distance, and <span class="math notranslate nohighlight">\(L_\infty\)</span> distance,
+however, for the distance measures, we employ a trick</p>
+<div class="math notranslate nohighlight">
+\[s_{ij} = \frac{1}{\exp(d_{ij})}\]</div>
+<p>where <span class="math notranslate nohighlight">\(d_{ij}\)</span> is the distance between labels <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>.
+The kernel that typically performed the best was the RBF measure so it is the
+default value. The grouping method can be accessed by typing, for example,</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="kn">import</span> <span class="n">compute_cd</span>
+
+<span class="gp">In [14]: </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+
+<span class="gp">In [15]: </span><span class="n">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">array([0, 0, 1, 1])</span>
+</pre></div>
+</div>
+<p>Alternatively, one can also again access the more general function,
+<a class="reference internal" href="#gen_hc.group_labels.group_labels" title="gen_hc.group_labels.group_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">group_labels()</span></code></a> and have</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.8</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">],</span>
+<span class="gp">   ....: </span>              <span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">]])</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [17]: </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="gp">In [18]: </span><span class="n">group_labels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">group_algo</span><span class="o">=</span><span class="s1">&#39;cd&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">)</span>
+<span class="gh">Out[18]: </span><span class="go">array([0, 0, 1, 1])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="function-documentation">
+<h2>Function Documentation<a class="headerlink" href="#function-documentation" title="Permalink to this headline">¶</a></h2>
+<p>This contains the primary functions one can utilize to group labels assuming
+that the user has provided either the <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> matrix or data,
+<span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p>
+<dl class="function">
+<dt id="gen_hc.group_labels.group_labels">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">group_labels</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>group_algo='kmeans'</em>, <em>random_state=None</em>, <em>k=None</em>, <em>metric=None</em>, <em>n_jobs=1</em>, <em>label_frac=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#group_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.group_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the label groupings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">np.ndarray</span></dt><dd><p>Data matrix</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">np.ndarray</span></dt><dd><p>Label vector</p>
+</dd>
+<dt><strong>group_algo</strong><span class="classifier">str</span></dt><dd><p>Which grouping algorithm to use – ‘kmeans’ or ‘cd’</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or np.random.RandomState</span></dt><dd><p>Pseudo random number generator</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Number of meta-classes if k-means method is called</p>
+</dd>
+<dt><strong>metric</strong><span class="classifier">str</span></dt><dd><p>Similarity metric to use if community detection method is called</p>
+</dd>
+<dt><strong>n_jobs</strong><span class="classifier">int</span></dt><dd><p>Desired number of cores to run clustering algorithm; -1 runs all cores</p>
+</dd>
+<dt><strong>label_frac</strong><span class="classifier">float</span></dt><dd><p>Fraction of the label space to use for meta-classes if the number
+is not specified</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>label_groups: np.ndarray</strong></dt><dd><p>Label grouping</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="go">                  [1.25, 1],</span>
+<span class="go">                  [1, 1.25],</span>
+<span class="go">                  [1.25, 1.25],</span>
+<span class="go">                  [5, 5],</span>
+<span class="go">                  [5.25, 5.25]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">group_labels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">group_algo</span><span class="o">=</span><span class="s1">&#39;kmeans&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">np.array([0, 0, 1])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gen_hc.group_labels.compute_kmc">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">compute_kmc</code><span class="sig-paren">(</span><em>V</em>, <em>k</em>, <em>random_state=None</em>, <em>n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#compute_kmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.compute_kmc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the K-means based approach to grouping labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>V</strong><span class="classifier">np.ndarray</span></dt><dd><p>Mean label point matrix</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Desired number of meta-classes</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or np.random.RandomState</span></dt><dd><p>Pseudo random number generator</p>
+</dd>
+<dt><strong>n_jobs</strong><span class="classifier">int</span></dt><dd><p>Desired number of cores to run clustering algorithm; -1 runs all cores</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>label_groups: np.ndarray</strong></dt><dd><p>Label grouping</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">np.array([1, 0, 0])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gen_hc.group_labels.compute_cd">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">compute_cd</code><span class="sig-paren">(</span><em>V</em>, <em>metric='rbf'</em>, <em>random_state=None</em>, <em>n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#compute_cd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.compute_cd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the community detection based approach for label grouping</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>V</strong><span class="classifier">np.ndarray</span></dt><dd><p>Mean label point matrix</p>
+</dd>
+<dt><strong>metric</strong><span class="classifier">str</span></dt><dd><p>Which measure to use to compute label similarity. Only support RBF
+(‘rbf’), L2 (‘l2’), and L-infinity (‘linf’) measures</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or np.random.RandomState</span></dt><dd><p>Pseudo random number generator</p>
+</dd>
+<dt><strong>n_jobs</strong><span class="classifier">int</span></dt><dd><p>Desired number of cores to run clustering algorithm; -1 runs all cores</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>label_groups: np.ndarray</strong></dt><dd><p>Label grouping</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">)</span>
+<span class="go">np.array([0, 0, 1, 1])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gen_hc.group_labels.build_v_matrix">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">build_v_matrix</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#build_v_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.build_v_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes mean label point matrix</p>
+<p>The mean label point matrix is used for all of the label grouping methods
+because it is able to represent the label space in a computationally
+tractable manner vice doing pairwise computations for all of the samples
+that belong to each label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">np.ndarray</span></dt><dd><p>Data matrix</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">np.ndarray</span></dt><dd><p>Label vector</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>V</strong><span class="classifier">np.ndarray</span></dt><dd><p>Mean label point matrix</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">np.array([[1.5, 1.5],</span>
+<span class="go">          [3.5, 3.5]]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Zachary Blanks
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

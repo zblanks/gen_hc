@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gen_hc.group_labels &mdash; Generalized Hierarchical Classifiers 0.post9+g5f53b0b documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="../../_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Generalized Hierarchical Classifiers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post9+g5f53b0b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../label-grouping.html">Label Grouping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Generalized Hierarchical Classifiers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>gen_hc.group_labels</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gen_hc.group_labels</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="k">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics.pairwise</span> <span class="k">import</span> <span class="n">rbf_kernel</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">pairwise_distances</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">StandardScaler</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">community</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">create_rng</span>
+
+
+<div class="viewcode-block" id="build_v_matrix"><a class="viewcode-back" href="../../label-grouping.html#gen_hc.group_labels.build_v_matrix">[docs]</a><span class="k">def</span> <span class="nf">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes mean label point matrix</span>
+
+<span class="sd">    The mean label point matrix is used for all of the label grouping methods</span>
+<span class="sd">    because it is able to represent the label space in a computationally</span>
+<span class="sd">    tractable manner vice doing pairwise computations for all of the samples</span>
+<span class="sd">    that belong to each label.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.ndarray</span>
+<span class="sd">        Data matrix</span>
+<span class="sd">    y : np.ndarray</span>
+<span class="sd">        Label vector</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    V : np.ndarray</span>
+<span class="sd">        Mean label point matrix</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; X = np.array([[1, 1], [2, 2], [3, 3], [4, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array([0, 0, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; build_v_matrix(X, y)</span>
+<span class="sd">    np.array([[1.5, 1.5],</span>
+<span class="sd">              [3.5, 3.5]]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">uniq_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">nclasses</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_labels</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nclasses</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+    <span class="n">idx_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">uniq_labels</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nclasses</span><span class="p">):</span>
+        <span class="n">V</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">idx_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">V</span></div>
+
+
+<div class="viewcode-block" id="compute_kmc"><a class="viewcode-back" href="../../label-grouping.html#gen_hc.group_labels.compute_kmc">[docs]</a><span class="k">def</span> <span class="nf">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the K-means based approach to grouping labels</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    V : np.ndarray</span>
+<span class="sd">        Mean label point matrix</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Desired number of meta-classes</span>
+<span class="sd">    random_state : int or np.random.RandomState</span>
+<span class="sd">        Pseudo random number generator</span>
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        Desired number of cores to run clustering algorithm; -1 runs all cores</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    label_groups: np.ndarray</span>
+<span class="sd">        Label grouping</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; V = np.array([[1, 1], [2.5, 2.5], [3, 3]])</span>
+<span class="sd">    &gt;&gt;&gt; compute_kmc(V, 2)</span>
+<span class="sd">    np.array([1, 0, 0])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+    <span class="n">kmeans</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">V</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_check_valid_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">nlabels</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks that a label grouping is valid (# of communities in {2, ..., labels})</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    partition : np.ndarray</span>
+<span class="sd">        Proposed label grouping from community detection method</span>
+<span class="sd">    nlabels : int</span>
+<span class="sd">        Number of unique labels in the data</span>
+<span class="sd">    metric: str</span>
+<span class="sd">        Similarity measure used to generate partition</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    is_valid: bool</span>
+<span class="sd">        Whether a partition is valid</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ncommunities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ncommunities</span> <span class="o">&lt;</span> <span class="n">nlabels</span> <span class="ow">and</span> <span class="n">ncommunities</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">metric_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rbf&#39;</span><span class="p">:</span> <span class="s1">&#39;RBF&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;linf&#39;</span><span class="p">:</span> <span class="s1">&#39;L-infinity&#39;</span><span class="p">}</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not find valid partition with </span><span class="si">{}</span><span class="s1">. Try using &#39;</span>
+                         <span class="s1">&#39;another kernel.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric_dict</span><span class="p">[</span><span class="n">metric</span><span class="p">]))</span>
+
+
+<span class="k">def</span> <span class="nf">_convert_format</span><span class="p">(</span><span class="n">partition</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the format of the python-louvain into a numpy array</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    partition : dict</span>
+<span class="sd">        Standard output from python-louvain package</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    partition: np.array</span>
+<span class="sd">        Partition as a numpy array</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">partition</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+
+
+<div class="viewcode-block" id="compute_cd"><a class="viewcode-back" href="../../label-grouping.html#gen_hc.group_labels.compute_cd">[docs]</a><span class="k">def</span> <span class="nf">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the community detection based approach for label grouping</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    V : np.ndarray</span>
+<span class="sd">        Mean label point matrix</span>
+<span class="sd">    metric : str</span>
+<span class="sd">        Which measure to use to compute label similarity. Only support RBF</span>
+<span class="sd">        (&#39;rbf&#39;), L2 (&#39;l2&#39;), and L-infinity (&#39;linf&#39;) measures</span>
+<span class="sd">    random_state : int or np.random.RandomState</span>
+<span class="sd">        Pseudo random number generator</span>
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        Desired number of cores to run clustering algorithm; -1 runs all cores</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    label_groups: np.ndarray</span>
+<span class="sd">        Label grouping</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; V = np.array([[1, 1], [1.1, 1.1], [9.9, 9.9], [10, 10]])</span>
+<span class="sd">    &gt;&gt;&gt; compute_cd(V, &#39;rbf&#39;)</span>
+<span class="sd">    np.array([0, 0, 1, 1])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Only accept &#39;rbf&#39;, &#39;l2&#39;, or &#39;linf&#39; as valid measures of label similarity</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="s1">&#39;linf&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid metric value; only accept RBF, L2, or L-inf &#39;</span>
+                         <span class="s1">&#39;kernels&#39;</span><span class="p">)</span>
+
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;rbf&#39;</span><span class="p">:</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">rbf_kernel</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># The remaining kernels are distance measures and thus have to be</span>
+        <span class="c1"># converted into a similarity metric</span>
+        <span class="n">dist_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;l2&#39;</span><span class="p">:</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;linf&#39;</span><span class="p">:</span> <span class="s1">&#39;chebyshev&#39;</span><span class="p">}</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">dist_dict</span><span class="p">[</span><span class="n">metric</span><span class="p">],</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+    <span class="n">partition</span> <span class="o">=</span> <span class="n">community</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">S</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
+    <span class="n">partition</span> <span class="o">=</span> <span class="n">_convert_format</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_check_valid_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">metric</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">partition</span></div>
+
+
+<div class="viewcode-block" id="group_labels"><a class="viewcode-back" href="../../label-grouping.html#gen_hc.group_labels.group_labels">[docs]</a><span class="k">def</span> <span class="nf">group_labels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">group_algo</span><span class="o">=</span><span class="s1">&#39;kmeans&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label_frac</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates the label groupings</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : np.ndarray</span>
+<span class="sd">        Data matrix</span>
+<span class="sd">    y : np.ndarray</span>
+<span class="sd">        Label vector</span>
+<span class="sd">    group_algo : str</span>
+<span class="sd">        Which grouping algorithm to use -- &#39;kmeans&#39; or &#39;cd&#39;</span>
+<span class="sd">    random_state : int or np.random.RandomState</span>
+<span class="sd">        Pseudo random number generator</span>
+<span class="sd">    k : int</span>
+<span class="sd">        Number of meta-classes if k-means method is called</span>
+<span class="sd">    metric : str</span>
+<span class="sd">        Similarity metric to use if community detection method is called</span>
+<span class="sd">    n_jobs : int</span>
+<span class="sd">        Desired number of cores to run clustering algorithm; -1 runs all cores</span>
+<span class="sd">    label_frac : float</span>
+<span class="sd">        Fraction of the label space to use for meta-classes if the number</span>
+<span class="sd">        is not specified</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    label_groups: np.ndarray</span>
+<span class="sd">        Label grouping</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; X = np.array([[1, 1],</span>
+<span class="sd">                      [1.25, 1],</span>
+<span class="sd">                      [1, 1.25],</span>
+<span class="sd">                      [1.25, 1.25],</span>
+<span class="sd">                      [5, 5],</span>
+<span class="sd">                      [5.25, 5.25]])</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array([0, 0, 1, 1, 2, 2])</span>
+<span class="sd">    &gt;&gt;&gt; group_labels(X, y, group_algo=&#39;kmeans&#39;, k=2)</span>
+<span class="sd">    np.array([0, 0, 1])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">group_algo</span> <span class="o">==</span> <span class="s1">&#39;kmeans&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nlabels</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">nlabels</span> <span class="o">*</span> <span class="n">label_frac</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of meta-classes must be an integer&#39;</span><span class="p">)</span>
+
+        <span class="n">label_groups</span> <span class="o">=</span> <span class="n">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">group_algo</span> <span class="o">==</span> <span class="s1">&#39;cd&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;rbf&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Similarity metric must be a string with value&#39;</span>
+                                <span class="s1">&#39;rbf, l2, or linf&#39;</span><span class="p">)</span>
+        <span class="n">label_groups</span> <span class="o">=</span> <span class="n">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only accept &quot;kmeans&quot; and &quot;cd&quot; for grouping &#39;</span>
+                         <span class="s1">&#39;algorithms&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">label_groups</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Zachary Blanks
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
