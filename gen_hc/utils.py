@@ -23,4 +23,5 @@ def create_rng(random_state):
     elif isinstance(random_state, np.random.RandomState):
         return random_state
     else:
-        raise TypeError("Must pass either a None, integer, or np.random.RandomState")
+        raise TypeError("Must pass either a None, integer, or "
+                        "np.random.RandomState")
