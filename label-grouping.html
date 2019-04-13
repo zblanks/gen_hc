@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Label Grouping &mdash; Generalized Hierarchical Classifiers 0.post9+g5f53b0b documentation</title>
+  <title>Label Grouping &mdash; Generalized Hierarchical Classifiers 0.post10+g6b8469d documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post9+g5f53b0b
+                0.post10+g6b8469d
               </div>
             
           
@@ -298,37 +298,117 @@ default value. The grouping method can be accessed by typing, for example,</p>
 <p>This contains the primary functions one can utilize to group labels assuming
 that the user has provided either the <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> matrix or data,
 <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p>
+<span class="target" id="module-gen_hc.group_labels"></span><dl class="function">
+<dt id="gen_hc.group_labels.build_v_matrix">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">build_v_matrix</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#build_v_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.build_v_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes mean label point matrix</p>
+<p>The mean label point matrix is used for all of the label grouping methods
+because it is able to represent the label space in a computationally
+tractable manner vice doing pairwise computations for all of the samples
+that belong to each label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Data matrix</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Label vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>V</strong> – Mean label point matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">np.array([[1.5, 1.5],</span>
+<span class="go">          [3.5, 3.5]]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gen_hc.group_labels.compute_cd">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">compute_cd</code><span class="sig-paren">(</span><em>V</em>, <em>metric='rbf'</em>, <em>random_state=None</em>, <em>n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#compute_cd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.compute_cd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the community detection based approach for label grouping</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>V</strong> (<em>np.ndarray</em>) – Mean label point matrix</p></li>
+<li><p><strong>metric</strong> (<em>{'rbf'</em><em>, </em><em>'l2'</em><em>, </em><em>'linf'}</em><em>, </em><em>optional</em>) – Which measure to use to compute label similarity</p></li>
+<li><p><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><em>np.random.RandomState</em><em>, </em><em>optional</em>) – Pseudo random number generator</p></li>
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Desired number of cores to run clustering algorithm; -1 runs all cores</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>label_groups</strong> – Label grouping</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">)</span>
+<span class="go">np.array([0, 0, 1, 1])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="gen_hc.group_labels.compute_kmc">
+<code class="descclassname">gen_hc.group_labels.</code><code class="descname">compute_kmc</code><span class="sig-paren">(</span><em>V</em>, <em>k</em>, <em>random_state=None</em>, <em>n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#compute_kmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.compute_kmc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the K-means based approach to grouping labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>V</strong> (<em>np.ndarray</em>) – Mean label point matrix</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Desired number of meta-classes</p></li>
+<li><p><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><em>np.random.RandomState</em><em>, </em><em>optional</em>) – Pseudo random number generator</p></li>
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Desired number of cores to run clustering algorithm; -1 runs all cores</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>label_groups</strong> – Label grouping</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">np.array([1, 0, 0])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="function">
 <dt id="gen_hc.group_labels.group_labels">
 <code class="descclassname">gen_hc.group_labels.</code><code class="descname">group_labels</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>group_algo='kmeans'</em>, <em>random_state=None</em>, <em>k=None</em>, <em>metric=None</em>, <em>n_jobs=1</em>, <em>label_frac=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#group_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.group_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the label groupings</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>X</strong><span class="classifier">np.ndarray</span></dt><dd><p>Data matrix</p>
-</dd>
-<dt><strong>y</strong><span class="classifier">np.ndarray</span></dt><dd><p>Label vector</p>
-</dd>
-<dt><strong>group_algo</strong><span class="classifier">str</span></dt><dd><p>Which grouping algorithm to use – ‘kmeans’ or ‘cd’</p>
-</dd>
-<dt><strong>random_state</strong><span class="classifier">int or np.random.RandomState</span></dt><dd><p>Pseudo random number generator</p>
-</dd>
-<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Number of meta-classes if k-means method is called</p>
-</dd>
-<dt><strong>metric</strong><span class="classifier">str</span></dt><dd><p>Similarity metric to use if community detection method is called</p>
-</dd>
-<dt><strong>n_jobs</strong><span class="classifier">int</span></dt><dd><p>Desired number of cores to run clustering algorithm; -1 runs all cores</p>
-</dd>
-<dt><strong>label_frac</strong><span class="classifier">float</span></dt><dd><p>Fraction of the label space to use for meta-classes if the number
-is not specified</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Data matrix</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Label vector</p></li>
+<li><p><strong>group_algo</strong> (<em>{'kmeans'</em><em>, </em><em>'cd'}</em><em>, </em><em>optional</em>) – Which grouping algorithm to use</p></li>
+<li><p><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><em>np.random.RandomState</em><em>, </em><em>optional</em>) – Pseudo random number generator</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of meta-classes if k-means method is called</p></li>
+<li><p><strong>metric</strong> (<em>{'rbf'</em><em>, </em><em>'l2'</em><em>, </em><em>'linf}</em><em>, </em><em>optional</em>) – Similarity metric to use if community detection method is called</p></li>
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Desired number of cores to run clustering algorithm; -1 runs all cores</p></li>
+<li><p><strong>label_frac</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Fraction of the label space to use for meta-classes if the number
+is not specified</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>label_groups: np.ndarray</strong></dt><dd><p>Label grouping</p>
+<dd class="field-even"><p><strong>label_groups</strong> – Label grouping</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -341,105 +421,6 @@ is not specified</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">group_labels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">group_algo</span><span class="o">=</span><span class="s1">&#39;kmeans&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">np.array([0, 0, 1])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="gen_hc.group_labels.compute_kmc">
-<code class="descclassname">gen_hc.group_labels.</code><code class="descname">compute_kmc</code><span class="sig-paren">(</span><em>V</em>, <em>k</em>, <em>random_state=None</em>, <em>n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#compute_kmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.compute_kmc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements the K-means based approach to grouping labels</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>V</strong><span class="classifier">np.ndarray</span></dt><dd><p>Mean label point matrix</p>
-</dd>
-<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Desired number of meta-classes</p>
-</dd>
-<dt><strong>random_state</strong><span class="classifier">int or np.random.RandomState</span></dt><dd><p>Pseudo random number generator</p>
-</dd>
-<dt><strong>n_jobs</strong><span class="classifier">int</span></dt><dd><p>Desired number of cores to run clustering algorithm; -1 runs all cores</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>label_groups: np.ndarray</strong></dt><dd><p>Label grouping</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">np.array([1, 0, 0])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="gen_hc.group_labels.compute_cd">
-<code class="descclassname">gen_hc.group_labels.</code><code class="descname">compute_cd</code><span class="sig-paren">(</span><em>V</em>, <em>metric='rbf'</em>, <em>random_state=None</em>, <em>n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#compute_cd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.compute_cd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements the community detection based approach for label grouping</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>V</strong><span class="classifier">np.ndarray</span></dt><dd><p>Mean label point matrix</p>
-</dd>
-<dt><strong>metric</strong><span class="classifier">str</span></dt><dd><p>Which measure to use to compute label similarity. Only support RBF
-(‘rbf’), L2 (‘l2’), and L-infinity (‘linf’) measures</p>
-</dd>
-<dt><strong>random_state</strong><span class="classifier">int or np.random.RandomState</span></dt><dd><p>Pseudo random number generator</p>
-</dd>
-<dt><strong>n_jobs</strong><span class="classifier">int</span></dt><dd><p>Desired number of cores to run clustering algorithm; -1 runs all cores</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>label_groups: np.ndarray</strong></dt><dd><p>Label grouping</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">)</span>
-<span class="go">np.array([0, 0, 1, 1])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="gen_hc.group_labels.build_v_matrix">
-<code class="descclassname">gen_hc.group_labels.</code><code class="descname">build_v_matrix</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#build_v_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.build_v_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes mean label point matrix</p>
-<p>The mean label point matrix is used for all of the label grouping methods
-because it is able to represent the label space in a computationally
-tractable manner vice doing pairwise computations for all of the samples
-that belong to each label.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>X</strong><span class="classifier">np.ndarray</span></dt><dd><p>Data matrix</p>
-</dd>
-<dt><strong>y</strong><span class="classifier">np.ndarray</span></dt><dd><p>Label vector</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>V</strong><span class="classifier">np.ndarray</span></dt><dd><p>Mean label point matrix</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="go">np.array([[1.5, 1.5],</span>
-<span class="go">          [3.5, 3.5]]])</span>
 </pre></div>
 </div>
 </dd></dl>

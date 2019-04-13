@@ -132,10 +132,5 @@ This contains the primary functions one can utilize to group labels assuming
 that the user has provided either the :math:`\mathbf{V}` matrix or data,
 :math:`\mathcal{D}`.
 
-.. autofunction:: gen_hc.group_labels.group_labels
-
-.. autofunction:: gen_hc.group_labels.compute_kmc
-
-.. autofunction:: gen_hc.group_labels.compute_cd
-
-.. autofunction:: gen_hc.group_labels.build_v_matrix
+.. automodule:: gen_hc.group_labels
+    :members:

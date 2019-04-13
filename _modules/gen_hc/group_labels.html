@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gen_hc.group_labels &mdash; Generalized Hierarchical Classifiers 0.post9+g5f53b0b documentation</title>
+  <title>gen_hc.group_labels &mdash; Generalized Hierarchical Classifiers 0.post10+g6b8469d documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post9+g5f53b0b
+                0.post10+g6b8469d
               </div>
             
           
@@ -218,14 +218,14 @@
 <span class="sd">        Mean label point matrix</span>
 <span class="sd">    k : int</span>
 <span class="sd">        Desired number of meta-classes</span>
-<span class="sd">    random_state : int or np.random.RandomState</span>
+<span class="sd">    random_state : int or np.random.RandomState, optional</span>
 <span class="sd">        Pseudo random number generator</span>
-<span class="sd">    n_jobs : int</span>
+<span class="sd">    n_jobs : int, optional</span>
 <span class="sd">        Desired number of cores to run clustering algorithm; -1 runs all cores</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    label_groups: np.ndarray</span>
+<span class="sd">    label_groups : np.ndarray</span>
 <span class="sd">        Label grouping</span>
 
 <span class="sd">    Examples</span>
@@ -294,12 +294,11 @@
 <span class="sd">    ----------</span>
 <span class="sd">    V : np.ndarray</span>
 <span class="sd">        Mean label point matrix</span>
-<span class="sd">    metric : str</span>
-<span class="sd">        Which measure to use to compute label similarity. Only support RBF</span>
-<span class="sd">        (&#39;rbf&#39;), L2 (&#39;l2&#39;), and L-infinity (&#39;linf&#39;) measures</span>
-<span class="sd">    random_state : int or np.random.RandomState</span>
+<span class="sd">    metric : {&#39;rbf&#39;, &#39;l2&#39;, &#39;linf&#39;}, optional</span>
+<span class="sd">        Which measure to use to compute label similarity</span>
+<span class="sd">    random_state : int or np.random.RandomState, optional</span>
 <span class="sd">        Pseudo random number generator</span>
-<span class="sd">    n_jobs : int</span>
+<span class="sd">    n_jobs : int, optional</span>
 <span class="sd">        Desired number of cores to run clustering algorithm; -1 runs all cores</span>
 
 <span class="sd">    Returns</span>
@@ -347,23 +346,23 @@
 <span class="sd">        Data matrix</span>
 <span class="sd">    y : np.ndarray</span>
 <span class="sd">        Label vector</span>
-<span class="sd">    group_algo : str</span>
-<span class="sd">        Which grouping algorithm to use -- &#39;kmeans&#39; or &#39;cd&#39;</span>
-<span class="sd">    random_state : int or np.random.RandomState</span>
+<span class="sd">    group_algo : {&#39;kmeans&#39;, &#39;cd&#39;}, optional</span>
+<span class="sd">        Which grouping algorithm to use</span>
+<span class="sd">    random_state : int or np.random.RandomState, optional</span>
 <span class="sd">        Pseudo random number generator</span>
-<span class="sd">    k : int</span>
+<span class="sd">    k : int, optional</span>
 <span class="sd">        Number of meta-classes if k-means method is called</span>
-<span class="sd">    metric : str</span>
+<span class="sd">    metric : {&#39;rbf&#39;, &#39;l2&#39;, &#39;linf}, optional</span>
 <span class="sd">        Similarity metric to use if community detection method is called</span>
-<span class="sd">    n_jobs : int</span>
+<span class="sd">    n_jobs : int, optional</span>
 <span class="sd">        Desired number of cores to run clustering algorithm; -1 runs all cores</span>
-<span class="sd">    label_frac : float</span>
+<span class="sd">    label_frac : float, optional</span>
 <span class="sd">        Fraction of the label space to use for meta-classes if the number</span>
 <span class="sd">        is not specified</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    label_groups: np.ndarray</span>
+<span class="sd">    label_groups : np.ndarray</span>
 <span class="sd">        Label grouping</span>
 
 <span class="sd">    Examples</span>
