@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Classifier Fitting and Prediction &mdash; Generalized Hierarchical Classifiers 0.post13+g58fd60f documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script type="text/javascript" src="_static/copybutton.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release History" href="release-history.html" />
+    <link rel="prev" title="Label Grouping" href="label-grouping.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Generalized Hierarchical Classifiers
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.post13+g58fd60f
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="label-grouping.html">Label Grouping</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Classifier Fitting and Prediction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fitting-the-classifier">Fitting the Classifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculating-predictions">Calculating Predictions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arg-max-predictions">Arg-Max Predictions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lotp-predictions">LOTP Predictions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Generalized Hierarchical Classifiers</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Classifier Fitting and Prediction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/classifier-fitting.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="classifier-fitting-and-prediction">
+<h1>Classifier Fitting and Prediction<a class="headerlink" href="#classifier-fitting-and-prediction" title="Permalink to this headline">¶</a></h1>
+<p>Once the label grouping has been learned (or if it is known beforehand), the
+next step is to fit the model using the data
+<span class="math notranslate nohighlight">\(\mathcal{D} = (\mathbf{X}, \mathbf{y})\)</span> and tree, as defined by the
+matrix, <span class="math notranslate nohighlight">\(\mathbf{Z}\)</span>. The simplest way to approach this problem is to
+train each of the parent nodes in the tree separately from one another. This
+allows the algorithm to be parallelized and avoids the issue of having to
+globally optimize the HC. Additionally, once the tree has been fit to the
+provided data, one needs to be able to compute test set predictions. In this
+package we utilize a way that avoids the “routing problem” – the challenge
+where issues made at higher levels of the tree are propagated through the
+system.</p>
+<div class="section" id="fitting-the-classifier">
+<h2>Fitting the Classifier<a class="headerlink" href="#fitting-the-classifier" title="Permalink to this headline">¶</a></h2>
+<p>The primary interface in which one can both find a label grouping for the data
+and fit an HC, is via the <code class="xref py py-class docutils literal notranslate"><span class="pre">GenHC</span></code> class. This class
+allows the user to control how the label grouping is performed (or if desired
+the user can provide their own partition assuming it is valid), define how
+the test set predictions are calculated, and how the classifier should fit
+the data. Let’s start with a simple example:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">gen_hc</span> <span class="kn">import</span> <span class="n">GenHC</span>
+
+<span class="gp">In [3]: </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">   ...: </span>                           <span class="n">n_informative</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">   ...: </span>                           <span class="n">n_repeated</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">   ...: </span>                           <span class="n">random_state</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [4]: </span><span class="n">hc</span> <span class="o">=</span> <span class="n">GenHC</span><span class="p">()</span>
+
+<span class="gp">In [5]: </span><span class="n">hc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">clf</span><span class="o">=</span><span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">hc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gh">Out[6]: </span><span class="go">array([2, 0, 0, 1, 0, 0, 0, 2, 1, 2])</span>
+</pre></div>
+</div>
+<p>In this example, we created a synthetic data set, defined an instance of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">GenHC</span></code> class, fit the model to the provided data, and
+finally generated predictions using the law of total probability (LOTP) method.
+Let’s walk through the last parts of the code block to explain what is
+happening underneath the hood.</p>
+<p>When the <code class="xref py py-func docutils literal notranslate"><span class="pre">GenHC()</span></code> class is called, it is not necessary to
+provide any arguments. The class has been provided sensible default values
+which correspond to what has been observed to work in practical settings.
+Therefore if one were to simply use <code class="xref py py-func docutils literal notranslate"><span class="pre">GenHC()</span></code> as is,
+the algorithm would default to use the k-means approach (more information
+provided in <a class="reference internal" href="label-grouping.html#k-means-clustering-approach"><span class="std std-ref">K-Means Clustering Approach</span></a>). Moreover, the algorithm will
+default to 10% of the number of labels or two meta-classes – whichever is
+larger. Finally, it will also default to the LOTP generated predictions
+(discussed more in <a class="reference internal" href="#calculating-predictions"><span class="std std-ref">Calculating Predictions</span></a>) and will have the number of
+features be the number of labels passed to the method minus one. The features
+are adjusted in the HC because it has been demonstrated that giving different
+sets of features to the parent nodes in the graph improves downstream
+performance.</p>
+<p>When fitting the an HC using the <code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code> method, a
+thing to be careful about is that the user must provide the classifier as well
+as any keyword arguments affiliated with the estimator. At the moment, we only
+support Scikit-learn classifiers that can output a posterior probability when
+calculating test predictions. In principle though, this framework is quite
+general and as long as the classifier given to the fit method can produce
+probabilistic predictions, then it is a valid model for this type of
+classifier. For example, if one wanted to use a convolutional neural network
+(CNN), with appropriate modifications to the code (namely adjusting the methods
+to calculate predictions and how the code base interacts with the classifier),
+this would work for a generalized HC. Moreover at the moment, the classifier
+provided with the <code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code> method is the one that is
+used for every parent node in the tree. This is done for simplicity, but
+strictly speaking there is no reason that this is a hard requirement.
+Again the code base could be adjusted to allow the user greater flexibility
+in specifying the classifier for each node in the graph. One potential use
+case is that perhaps certain subsets of the labels are easier to predict and
+thus a less powerful model could be used to reduce the computational burden
+of fitting the HC.</p>
+</div>
+<div class="section" id="calculating-predictions">
+<h2>Calculating Predictions<a class="headerlink" href="#calculating-predictions" title="Permalink to this headline">¶</a></h2>
+<p>After the model has been fit, there are two ways in which one can calculate
+test set predictions: the standard “arg-max” approach and one which uses
+the LOTP. It is strongly recommended to use the LOTP method because it has
+been shown to give more stable posterior predictions and due to its NumPy based
+implementation is not that much slower than the traditional “arg-max” method.</p>
+<div class="section" id="arg-max-predictions">
+<h3>Arg-Max Predictions<a class="headerlink" href="#arg-max-predictions" title="Permalink to this headline">¶</a></h3>
+<p>The standard way to predict classes with an HC is to start at the top of the
+tree and proceed in the direction which gives the highest posterior probability
+for that parent node. Certain papers have shown that this technique can reduce
+the time it takes to generate test set predictions such as
+<a class="reference internal" href="#bengio2010label" id="id1">[BWG10]</a>. If this is the desired way to generate predictions
+it can be done by typing</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">hc</span> <span class="o">=</span> <span class="n">GenHC</span><span class="p">(</span><span class="n">prediction_method</span><span class="o">=</span><span class="s1">&#39;argmax&#39;</span><span class="p">)</span>
+
+<span class="gp">In [8]: </span><span class="n">hc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">clf</span><span class="o">=</span><span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="gp">In [9]: </span><span class="n">hc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gh">Out[9]: </span><span class="go">array([2, 0, 0, 1, 0, 0, 0, 2, 1, 2])</span>
+</pre></div>
+</div>
+<p>Note that this approach will not allow the user to create a probability matrix
+<span class="math notranslate nohighlight">\(\hat{\mathbf{Y}}\)</span> because there is no clear way in which one could
+generate this prediction without claiming that a majority of the labels have
+zero posterior probability mass.</p>
+</div>
+<div class="section" id="lotp-predictions">
+<h3>LOTP Predictions<a class="headerlink" href="#lotp-predictions" title="Permalink to this headline">¶</a></h3>
+<p>The alternative way to generate predictions, and the one that is strongly
+recommended, is to calculate test set values using the LOTP. Formally this
+equates to solving</p>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>mathbb{P}left(y_i = j mid mathbf{x}_i right) = sum_{l=1}^L
+mathbb{P}left(y_i in mathbf{Z}_l mid mathbf{x}_iright)
+mathbb{P}left(y_i = j mid mathbf{x}_i, y_i in mathbf{Z}_lright) quad
+forall j</p>
+<p>where <span class="math notranslate nohighlight">\(j\)</span> denotes the label whose probability is being predicted from the
+set of all classes and <span class="math notranslate nohighlight">\(L\)</span> is the total number of meta-classes which
+has been learned. This equations assumes that the tree has only one layer, but
+one could write a recursive form of this equation if the user desired to relax
+this constraint.</p>
+<p>This is default method for generating predictions for the HC, but it can
+be explicitly called by typing</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">hc</span> <span class="o">=</span> <span class="n">GenHC</span><span class="p">(</span><span class="n">prediction_method</span><span class="o">=</span><span class="s1">&#39;lotp&#39;</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="n">hc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">clf</span><span class="o">=</span><span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">hc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gh">Out[12]: </span><span class="go">array([2, 0, 0, 1, 0, 0, 0, 2, 1, 2])</span>
+</pre></div>
+</div>
+<p>Additionally, the benefit of using this approach is that it also supports
+creating the <span class="math notranslate nohighlight">\(\hat{\mathbf{Y}}\)</span> matrix which can be accessed through
+the <code class="xref py py-func docutils literal notranslate"><span class="pre">predict_proba()</span></code> method.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">hc</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gh">Out[13]: </span><span class="go"></span>
+<span class="go">array([[0.09, 0.01, 0.9 ],</span>
+<span class="go">       [1.  , 0.  , 0.  ],</span>
+<span class="go">       [0.9 , 0.1 , 0.  ],</span>
+<span class="go">       [0.  , 1.  , 0.  ],</span>
+<span class="go">       [1.  , 0.  , 0.  ],</span>
+<span class="go">       [1.  , 0.  , 0.  ],</span>
+<span class="go">       [0.5 , 0.5 , 0.  ],</span>
+<span class="go">       [0.1 , 0.  , 0.9 ],</span>
+<span class="go">       [0.  , 1.  , 0.  ],</span>
+<span class="go">       [0.09, 0.01, 0.9 ]])</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="gen_hc.GenHC">
+<em class="property">class </em><code class="descclassname">gen_hc.</code><code class="descname">GenHC</code><span class="sig-paren">(</span><em>group_algo='kmeans'</em>, <em>k=None</em>, <em>label_frac=0.1</em>, <em>metric=None</em>, <em>label_groups=None</em>, <em>prediction_method='lotp'</em>, <em>num_features=None</em>, <em>feature_frac=0.25</em>, <em>n_jobs=1</em>, <em>random_state=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/gen_hc.html#GenHC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.GenHC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface to fit and get predictions for a generalized hierarchical classifier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group_algo</strong> (<em>{'kmeans'</em><em>, </em><em>'cd'}</em><em>, </em><em>optional</em>) – Which grouping algorithm to use</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of meta-classes if k-means method is called</p></li>
+<li><p><strong>label_frac</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Fraction of the label space to use for meta-classes if the number
+is not specified</p></li>
+<li><p><strong>metric</strong> (<em>{'rbf'</em><em>, </em><em>'l2'</em><em>, </em><em>'linf}</em><em>, </em><em>optional</em>) – Similarity metric to use if community detection method is called</p></li>
+<li><p><strong>label_groups</strong> (<em>np.ndarray</em><em>[</em><em>num_classes</em><em>,</em><em>]</em><em>, </em><em>optional</em>) – Pre-determined label groupings where each label is assigned to only
+one meta-class</p></li>
+<li><p><strong>prediction_method</strong> (<em>{'lotp'</em><em>, </em><em>'argmax'}</em><em>, </em><em>optional</em>) – Method by which predictions are generated for the HC</p></li>
+<li><p><strong>num_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of features to use to train the model</p></li>
+<li><p><strong>feature_frac</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Fraction of features to use with PCA if LDA is not feasible for the data</p></li>
+<li><p><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Desired number of cores to run algorithm; -1 runs all cores</p></li>
+<li><p><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em> or </em><em>np.random.RandomState</em><em>, </em><em>optional</em>) – Pseudo random number generator</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gen_hc</span> <span class="k">import</span> <span class="n">GenHC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="n">n_informative</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_repeated</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hc</span> <span class="o">=</span> <span class="n">GenHC</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">clf</span><span class="o">=</span><span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="go">array([2, 0, 0, 1, 0, 0, 0, 2, 1, 2])</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="gen_hc.GenHC.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>clf</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/gen_hc.html#GenHC.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.GenHC.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the hierarchical classifier to the provided data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em>) – Data matrix</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em>) – Label vector</p></li>
+<li><p><strong>clf</strong> (<em>{'knn'</em><em>, </em><em>'rf'</em><em>, </em><em>'logistic_regression'}</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – Classifier used to train the node; if it is an object then it is
+assumed that it is a Scikit-learn classification object that can
+make probabilistic predictions</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments which define the hyper-parameters for the
+classification object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gen_hc.GenHC.node_predict_proba">
+<code class="descname">node_predict_proba</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/gen_hc.html#GenHC.node_predict_proba"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.GenHC.node_predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the node-level probability predictions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>np.ndarray</em><em>[</em><em>num_samples</em><em>, </em><em>num_features</em><em>]</em>) – Test data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Y</strong> – Node-level probability prediction matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray[num_samples, num_meta-classes]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gen_hc.GenHC.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/gen_hc.html#GenHC.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.GenHC.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the class labels for the provided data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>np.ndarray</em><em>[</em><em>num_samples</em><em>, </em><em>num_features</em><em>]</em>) – Test data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>y</strong> – Vector of class labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray[num_samples,]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gen_hc.GenHC.predict_proba">
+<code class="descname">predict_proba</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/gen_hc.html#GenHC.predict_proba"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.GenHC.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict class probabilities for X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>np.ndarray</em><em>[</em><em>num_samples</em><em>, </em><em>num_features</em><em>]</em>) – Test data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Y</strong> – Leaf-level probability prediction matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray[num_samples, num_classes]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="bibtex-bibliography-classifier-fitting-0"><dl class="citation">
+<dt class="label" id="bengio2010label"><span class="brackets"><a class="fn-backref" href="#id1">BWG10</a></span></dt>
+<dd><p>Samy Bengio, Jason Weston, and David Grangier. Label embedding trees for large multi-class tasks. In <em>Advances in Neural Information Processing Systems</em>, 163–171. 2010.</p>
+</dd>
+</dl>
+</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="label-grouping.html" class="btn btn-neutral float-left" title="Label Grouping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Zachary Blanks
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Label Grouping &mdash; Generalized Hierarchical Classifiers 0.post10+g6b8469d documentation</title>
+  <title>Label Grouping &mdash; Generalized Hierarchical Classifiers 0.post13+g58fd60f documentation</title>
   
 
   
@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Release History" href="release-history.html" />
+    <link rel="next" title="Classifier Fitting and Prediction" href="classifier-fitting.html" />
     <link rel="prev" title="Usage" href="usage.html" /> 
 </head>
 
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.post10+g6b8469d
+                0.post13+g58fd60f
               </div>
             
           
@@ -92,13 +92,12 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Label Grouping</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mean-point-matrix">Mean-Point Matrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#k-means-clustering-approach">K-Means Clustering Approach</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#community-detection-approach">Community Detection Approach</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#function-documentation">Function Documentation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="classifier-fitting.html">Classifier Fitting and Prediction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-history.html">Release History</a></li>
 </ul>
 
@@ -166,8 +165,6 @@
             
   <div class="section" id="label-grouping">
 <h1>Label Grouping<a class="headerlink" href="#label-grouping" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The first step to employ the hierarchical classifiers (HCs) presented in this
 code base is to group label “similar” labels together. Similarity can be
 measured in a variety of ways, but in our research we have primarily focused
@@ -175,7 +172,6 @@ on <span class="math notranslate nohighlight">\(L_2\)</span> distance, and the r
 the <span class="math notranslate nohighlight">\(L_\infty\)</span> distance. The <span class="math notranslate nohighlight">\(L_2\)</span> norm is used for both grouping
 methods whereas the RBF and <span class="math notranslate nohighlight">\(L_\infty\)</span> norm is only applied for the
 community detection approach.</p>
-</div>
 <div class="section" id="mean-point-matrix">
 <h2>Mean-Point Matrix<a class="headerlink" href="#mean-point-matrix" title="Permalink to this headline">¶</a></h2>
 <p>There are two primary techniques we employ to group the labels – a k-means
@@ -242,7 +238,7 @@ example,</p>
 and finds a partition which groups them into two meta-classes. One can also
 access this method more generally through the
 <a class="reference internal" href="#gen_hc.group_labels.group_labels" title="gen_hc.group_labels.group_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">group_labels()</span></code></a>. For example,</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="kn">import</span> <span class="n">group_labels</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="kn">from</span> <span class="nn">gen_hc</span> <span class="kn">import</span> <span class="n">group_labels</span>
 
 <span class="gp">In [10]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.4</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.6</span><span class="p">,</span> <span class="mf">2.6</span><span class="p">],</span>
 <span class="gp">   ....: </span>              <span class="p">[</span><span class="mf">2.9</span><span class="p">,</span> <span class="mf">2.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">]])</span>
@@ -282,8 +278,8 @@ default value. The grouping method can be accessed by typing, for example,</p>
 </div>
 <p>Alternatively, one can also again access the more general function,
 <a class="reference internal" href="#gen_hc.group_labels.group_labels" title="gen_hc.group_labels.group_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">group_labels()</span></code></a> and have</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.8</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">],</span>
-<span class="gp">   ....: </span>              <span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">]])</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">.</span><span class="mi">9</span><span class="p">,</span> <span class="o">.</span><span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">],</span>
+<span class="gp">   ....: </span>              <span class="p">[</span><span class="mf">9.8</span><span class="p">,</span> <span class="mf">9.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.1</span><span class="p">,</span> <span class="mf">10.1</span><span class="p">]])</span>
 <span class="gp">   ....: </span>
 
 <span class="gp">In [17]: </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
@@ -292,12 +288,6 @@ default value. The grouping method can be accessed by typing, for example,</p>
 <span class="gh">Out[18]: </span><span class="go">array([0, 0, 1, 1])</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="function-documentation">
-<h2>Function Documentation<a class="headerlink" href="#function-documentation" title="Permalink to this headline">¶</a></h2>
-<p>This contains the primary functions one can utilize to group labels assuming
-that the user has provided either the <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> matrix or data,
-<span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p>
 <span class="target" id="module-gen_hc.group_labels"></span><dl class="function">
 <dt id="gen_hc.group_labels.build_v_matrix">
 <code class="descclassname">gen_hc.group_labels.</code><code class="descname">build_v_matrix</code><span class="sig-paren">(</span><em>X</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gen_hc/group_labels.html#build_v_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gen_hc.group_labels.build_v_matrix" title="Permalink to this definition">¶</a></dt>
@@ -321,11 +311,13 @@ that belong to each label.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="k">import</span> <span class="n">build_v_matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">build_v_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="go">np.array([[1.5, 1.5],</span>
-<span class="go">          [3.5, 3.5]]])</span>
+<span class="go">array([[1.5, 1.5],</span>
+<span class="go">       [3.5, 3.5]]])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -351,9 +343,11 @@ that belong to each label.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="k">import</span> <span class="n">compute_cd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">9.9</span><span class="p">,</span> <span class="mf">9.9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">compute_cd</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">)</span>
-<span class="go">np.array([0, 0, 1, 1])</span>
+<span class="go">array([0, 0, 1, 1])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -379,9 +373,11 @@ that belong to each label.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gen_hc.group_labels</span> <span class="k">import</span> <span class="n">compute_kmc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">compute_kmc</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">np.array([1, 0, 0])</span>
+<span class="go">array([1, 0, 0])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -412,15 +408,13 @@ is not specified</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="go">                  [1.25, 1],</span>
-<span class="go">                  [1, 1.25],</span>
-<span class="go">                  [1.25, 1.25],</span>
-<span class="go">                  [5, 5],</span>
-<span class="go">                  [5.25, 5.25]])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gen_hc</span> <span class="k">import</span> <span class="n">group_labels</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.25</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="p">[</span><span class="mf">5.25</span><span class="p">,</span> <span class="mf">5.25</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">group_labels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">group_algo</span><span class="o">=</span><span class="s1">&#39;kmeans&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="go">np.array([0, 0, 1])</span>
+<span class="go">array([0, 0, 1])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -436,7 +430,7 @@ is not specified</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="release-history.html" class="btn btn-neutral float-right" title="Release History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="classifier-fitting.html" class="btn btn-neutral float-right" title="Classifier Fitting and Prediction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

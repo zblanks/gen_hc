@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>gen_hc.group_labels &mdash; Generalized Hierarchical Classifiers 0.post10+g6b8469d documentation</title>
+  <title>gen_hc.group_labels &mdash; Generalized Hierarchical Classifiers 0.post13+g58fd60f documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.post10+g6b8469d
+                0.post13+g58fd60f
               </div>
             
           
@@ -90,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../label-grouping.html">Label Grouping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../classifier-fitting.html">Classifier Fitting and Prediction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../release-history.html">Release History</a></li>
 </ul>
 
@@ -188,11 +189,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from gen_hc.group_labels import build_v_matrix</span>
 <span class="sd">    &gt;&gt;&gt; X = np.array([[1, 1], [2, 2], [3, 3], [4, 4]])</span>
 <span class="sd">    &gt;&gt;&gt; y = np.array([0, 0, 1, 1])</span>
 <span class="sd">    &gt;&gt;&gt; build_v_matrix(X, y)</span>
-<span class="sd">    np.array([[1.5, 1.5],</span>
-<span class="sd">              [3.5, 3.5]]])</span>
+<span class="sd">    array([[1.5, 1.5],</span>
+<span class="sd">           [3.5, 3.5]]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -230,9 +233,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from gen_hc.group_labels import compute_kmc</span>
 <span class="sd">    &gt;&gt;&gt; V = np.array([[1, 1], [2.5, 2.5], [3, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; compute_kmc(V, 2)</span>
-<span class="sd">    np.array([1, 0, 0])</span>
+<span class="sd">    array([1, 0, 0])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rng</span> <span class="o">=</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
@@ -240,7 +245,7 @@
     <span class="k">return</span> <span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">V</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_check_valid_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">nlabels</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_check_valid_partition</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">num_labels</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks that a label grouping is valid (# of communities in {2, ..., labels})</span>
 
@@ -248,7 +253,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    partition : np.ndarray</span>
 <span class="sd">        Proposed label grouping from community detection method</span>
-<span class="sd">    nlabels : int</span>
+<span class="sd">    num_labels : int</span>
 <span class="sd">        Number of unique labels in the data</span>
 <span class="sd">    metric: str</span>
 <span class="sd">        Similarity measure used to generate partition</span>
@@ -259,8 +264,8 @@
 <span class="sd">        Whether a partition is valid</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ncommunities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">ncommunities</span> <span class="o">&lt;</span> <span class="n">nlabels</span> <span class="ow">and</span> <span class="n">ncommunities</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">num_communities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">partition</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">num_communities</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">num_labels</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">metric_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rbf&#39;</span><span class="p">:</span> <span class="s1">&#39;RBF&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;linf&#39;</span><span class="p">:</span> <span class="s1">&#39;L-infinity&#39;</span><span class="p">}</span>
@@ -308,9 +313,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from gen_hc.group_labels import compute_cd</span>
 <span class="sd">    &gt;&gt;&gt; V = np.array([[1, 1], [1.1, 1.1], [9.9, 9.9], [10, 10]])</span>
 <span class="sd">    &gt;&gt;&gt; compute_cd(V, &#39;rbf&#39;)</span>
-<span class="sd">    np.array([0, 0, 1, 1])</span>
+<span class="sd">    array([0, 0, 1, 1])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Only accept &#39;rbf&#39;, &#39;l2&#39;, or &#39;linf&#39; as valid measures of label similarity</span>
@@ -367,15 +374,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; X = np.array([[1, 1],</span>
-<span class="sd">                      [1.25, 1],</span>
-<span class="sd">                      [1, 1.25],</span>
-<span class="sd">                      [1.25, 1.25],</span>
-<span class="sd">                      [5, 5],</span>
-<span class="sd">                      [5.25, 5.25]])</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from gen_hc import group_labels</span>
+<span class="sd">    &gt;&gt;&gt; X = np.array([[1, 1], [1.25, 1], [1, 1.25], [1.25, 1.25], [5, 5],</span>
+<span class="sd">    ...               [5.25, 5.25]])</span>
 <span class="sd">    &gt;&gt;&gt; y = np.array([0, 0, 1, 1, 2, 2])</span>
 <span class="sd">    &gt;&gt;&gt; group_labels(X, y, group_algo=&#39;kmeans&#39;, k=2)</span>
-<span class="sd">    np.array([0, 0, 1])</span>
+<span class="sd">    array([0, 0, 1])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -384,8 +389,8 @@
 
     <span class="k">if</span> <span class="n">group_algo</span> <span class="o">==</span> <span class="s1">&#39;kmeans&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">nlabels</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">nlabels</span> <span class="o">*</span> <span class="n">label_frac</span><span class="p">))</span>
+            <span class="n">num_labels</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">num_labels</span> <span class="o">*</span> <span class="n">label_frac</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Number of meta-classes must be an integer&#39;</span><span class="p">)</span>
