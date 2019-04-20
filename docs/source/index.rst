@@ -12,4 +12,5 @@ Generalized Hierarchical Classifiers Documentation
    installation
    usage
    label-grouping
+   classifier-fitting
    release-history

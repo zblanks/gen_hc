@@ -32,11 +32,13 @@ def build_v_matrix(X, y):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from gen_hc.group_labels import build_v_matrix
     >>> X = np.array([[1, 1], [2, 2], [3, 3], [4, 4]])
     >>> y = np.array([0, 0, 1, 1])
     >>> build_v_matrix(X, y)
-    np.array([[1.5, 1.5],
-              [3.5, 3.5]]])
+    array([[1.5, 1.5],
+           [3.5, 3.5]]])
 
     """
 
@@ -74,9 +76,11 @@ def compute_kmc(V, k, random_state=None, n_jobs=1):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from gen_hc.group_labels import compute_kmc
     >>> V = np.array([[1, 1], [2.5, 2.5], [3, 3]])
     >>> compute_kmc(V, 2)
-    np.array([1, 0, 0])
+    array([1, 0, 0])
 
     """
     rng = create_rng(random_state)
@@ -84,7 +88,7 @@ def compute_kmc(V, k, random_state=None, n_jobs=1):
     return kmeans.fit_predict(V)
 
 
-def _check_valid_partition(partition, nlabels, metric):
+def _check_valid_partition(partition, num_labels, metric):
     """
     Checks that a label grouping is valid (# of communities in {2, ..., labels})
 
@@ -92,7 +96,7 @@ def _check_valid_partition(partition, nlabels, metric):
     ----------
     partition : np.ndarray
         Proposed label grouping from community detection method
-    nlabels : int
+    num_labels : int
         Number of unique labels in the data
     metric: str
         Similarity measure used to generate partition
@@ -103,8 +107,8 @@ def _check_valid_partition(partition, nlabels, metric):
         Whether a partition is valid
 
     """
-    ncommunities = len(np.unique(partition))
-    if ncommunities < nlabels and ncommunities >= 2:
+    num_communities = len(np.unique(partition))
+    if num_communities in np.arange(2, num_labels):
         return True
     else:
         metric_dict = {'rbf': 'RBF', 'l2': 'L2', 'linf': 'L-infinity'}
@@ -152,9 +156,11 @@ def compute_cd(V, metric='rbf', random_state=None, n_jobs=1):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from gen_hc.group_labels import compute_cd
     >>> V = np.array([[1, 1], [1.1, 1.1], [9.9, 9.9], [10, 10]])
     >>> compute_cd(V, 'rbf')
-    np.array([0, 0, 1, 1])
+    array([0, 0, 1, 1])
 
     """
     # Only accept 'rbf', 'l2', or 'linf' as valid measures of label similarity
@@ -211,15 +217,13 @@ def group_labels(X, y, group_algo='kmeans', random_state=None, k=None,
 
     Examples
     --------
-    >>> X = np.array([[1, 1],
-                      [1.25, 1],
-                      [1, 1.25],
-                      [1.25, 1.25],
-                      [5, 5],
-                      [5.25, 5.25]])
+    >>> import numpy as np
+    >>> from gen_hc import group_labels
+    >>> X = np.array([[1, 1], [1.25, 1], [1, 1.25], [1.25, 1.25], [5, 5],
+    ...               [5.25, 5.25]])
     >>> y = np.array([0, 0, 1, 1, 2, 2])
     >>> group_labels(X, y, group_algo='kmeans', k=2)
-    np.array([0, 0, 1])
+    array([0, 0, 1])
 
     """
     X = StandardScaler().fit_transform(X)
@@ -228,8 +232,8 @@ def group_labels(X, y, group_algo='kmeans', random_state=None, k=None,
 
     if group_algo == 'kmeans':
         if k is None:
-            nlabels = V.shape[0]
-            k = int(ceil(nlabels * label_frac))
+            num_labels = V.shape[0]
+            k = max(2, int(ceil(num_labels * label_frac)))
         else:
             if not isinstance(k, int):
                 raise TypeError('Number of meta-classes must be an integer')
