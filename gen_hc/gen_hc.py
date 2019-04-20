@@ -266,7 +266,7 @@ class GenHC:
         """
         self._check_is_trained()
 
-        if self.prediction_method is 'lotp':
+        if self.prediction_method == 'lotp':
             Y = self._lotp_predict_proba(X)
             return Y.argmax(axis=1)
         else:
@@ -289,7 +289,7 @@ class GenHC:
         """
         self._check_is_trained()
 
-        if self.prediction_method is 'argmax':
+        if self.prediction_method == 'argmax':
             raise ValueError('Cannot generate probabilistic predictions with '
                              'argmax approach')
 
@@ -311,7 +311,7 @@ class GenHC:
 
         """
         if isinstance(clf, str):
-            if not clf in ['knn', 'rf', 'logistic_regression']:
+            if clf not in ['knn', 'rf', 'logistic_regression']:
                 raise ValueError('Only support "knn", "rf", and '
                                  '"logistic_regression" estimators')
         elif is_classifier(clf):
@@ -378,9 +378,9 @@ class GenHC:
         """
 
         if isinstance(clf, str):
-            if clf is 'knn':
+            if clf == 'knn':
                 clf = KNeighborsClassifier()
-            elif clf is 'rf':
+            elif clf == 'rf':
                 clf = RandomForestClassifier(random_state=self.random_state)
             else:
                 clf = SGDClassifier(loss='log', random_state=self.random_state)
